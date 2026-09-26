@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hisobon</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f3f6f5;color:#17221e;min-height:100vh}
+.app{max-width:480px;margin:auto;min-height:100vh;padding-bottom:90px}
+.header{padding:22px 20px 10px;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#087f5b,#064c3b);display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 7px 18px rgba(0,100,70,.18)}
+.brand h1{font-size:23px;font-weight:800}.brand span{color:#07966a}
+.icon-btn{width:42px;height:42px;border:0;border-radius:14px;background:white;font-size:18px;cursor:pointer}
+.page{display:none}.page.active{display:block}
+.balance-card{margin:16px 20px;padding:23px;border-radius:25px;color:white;background:linear-gradient(135deg,#087f5b,#07553f);box-shadow:0 15px 30px rgba(0,100,70,.22)}
+.balance-label{font-size:13px;opacity:.75}.balance{font-size:33px;font-weight:800;margin:7px 0 20px}.balance-bottom{display:flex;gap:30px}
+.balance-stat small{display:block;opacity:.65;font-size:11px;margin-bottom:4px}.balance-stat strong{font-size:14px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:4px 20px 20px}
+.action{border:0;padding:17px;border-radius:18px;font-size:15px;font-weight:700;cursor:pointer}
+.income-btn{background:#e2f7ef;color:#087f5b}.expense-btn{background:#fff0ee;color:#d94b3d}
+.section{padding:0 20px}.section-head{display:flex;justify-content:space-between;align-items:center;margin:7px 0 13px}.section-head h2{font-size:18px}
+.section-head button{border:0;background:none;color:#07875f;font-weight:700}
+.search{margin-bottom:14px}.search input{width:100%;padding:14px 16px;border:0;border-radius:15px;background:white;outline:none;font-size:14px}
+.transactions{display:flex;flex-direction:column;gap:10px}
+.transaction{background:white;padding:14px;border-radius:17px;display:flex;align-items:center;gap:11px}
+.tx-icon{width:43px;height:43px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.tx-icon.income{background:#e4f8f0}.tx-icon.expense{background:#fff0ee}
+.tx-info{flex:1;min-width:0}.tx-info strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tx-info small{color:#89928f;font-size:11px}
+.tx-amount{font-size:13px;font-weight:800;white-space:nowrap}.tx-amount.income{color:#07865f}.tx-amount.expense{color:#dc5145}
+.delete-btn{border:0;background:none;color:#aaa;cursor:pointer}.empty{text-align:center;padding:35px 15px;color:#929b98;background:white;border-radius:18px}
+.stats-card{background:white;border-radius:20px;padding:18px;margin:10px 20px}
+.periods{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 20px 15px}
+.period-btn{border:0;padding:12px 5px;border-radius:13px;background:white;color:#727c78;font-weight:700;cursor:pointer}.period-btn.active{background:#087f5b;color:white}
+.big-stat{text-align:center;margin-bottom:20px}.big-stat small{color:#89928f}.big-stat h2{font-size:29px;margin-top:5px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.compare-box{padding:15px;border-radius:16px}
+.compare-box.income{background:#e4f8f0;color:#087f5b}.compare-box.expense{background:#fff0ee;color:#d94b3d}
+.compare-box small{display:block;font-size:11px;margin-bottom:6px}.compare-box strong{font-size:14px}
+.chart{height:190px;display:flex;align-items:flex-end;justify-content:space-around;gap:7px;padding:15px 4px 25px;border-bottom:1px solid #e8ecea}
+.chart-column{height:100%;flex:1;display:flex;align-items:flex-end;justify-content:center;position:relative}
+.chart-bar{width:70%;max-width:32px;min-height:4px;border-radius:8px 8px 3px 3px;background:#087f5b;position:relative}
+.chart-bar span{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:9px;color:#89928f}
+.category-list{display:flex;flex-direction:column;gap:12px}.category-row{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center}
+.category-icon{width:36px;height:36px;border-radius:12px;background:#f0f5f3;display:flex;align-items:center;justify-content:center}
+.category-name{font-size:13px;font-weight:700}.category-line{height:6px;background:#edf0ef;border-radius:10px;margin-top:5px;overflow:hidden}.category-fill{height:100%;background:#087f5b;border-radius:10px}.category-money{font-size:12px;font-weight:800}
+.insight{margin:15px 20px;padding:18px;border-radius:20px;background:linear-gradient(135deg,#e5f7f0,#f4fbf8)}.insight small{color:#568276}.insight h3{margin-top:5px;font-size:17px;color:#087f5b}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:72px;background:rgba(255,255,255,.96);backdrop-filter:blur(15px);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #e8ecea;z-index:20}
+.nav-btn{border:0;background:none;color:#9aa39f;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}.nav-btn span{font-size:21px}.nav-btn.active{color:#07875f}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:50}.modal.show{display:flex}
+.modal-box{width:100%;max-width:480px;background:white;border-radius:27px 27px 0 0;padding:22px 20px 30px}
+.modal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modal-top h2{font-size:20px}.close{border:0;background:#f1f3f2;width:35px;height:35px;border-radius:12px}
+.form-group{margin-bottom:13px}.form-group label{display:block;font-size:12px;color:#78817e;margin-bottom:6px}
+.form-group input,.form-group select{width:100%;padding:14px;border:1px solid #e3e8e5;border-radius:14px;font-size:15px;outline:none;background:white}
+.save-btn{width:100%;border:0;padding:16px;border-radius:15px;background:#087f5b;color:white;font-size:15px;font-weight:800}
+body.dark{background:#101614;color:#eef5f1}
+body.dark .icon-btn,body.dark .transaction,body.dark .search input,body.dark .stats-card,body.dark .period-btn,body.dark .bottom-nav,body.dark .modal-box,body.dark .empty{background:#19211e;color:#eef5f1}
+body.dark .search input,body.dark .form-group input,body.dark .form-group select{color:white}
+body.dark .form-group input,body.dark .form-group select{background:#202a26;border-color:#34403b}
+body.dark .period-btn{color:#aeb8b4}.period-btn.active{color:white}body.dark .category-line{background:#303936}body.dark .category-icon{background:#26312d}body.dark .insight{background:#17372e}body.dark .bottom-nav{border-color:#29332f}
+@media(max-width:360px){.balance{font-size:28px}.tx-amount{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header"><div class="brand"><div class="logo">🪙</div><h1>Hisob<span>on</span></h1></div><button class="icon-btn" onclick="toggleDark()">🌙</button></div>
+
+<div id="homePage" class="page active">
+<div class="balance-card"><div class="balance-label">Joriy balans</div><div class="balance" id="balance">0 so‘m</div><div class="balance-bottom"><div class="balance-stat"><small>Daromad</small><strong id="income">+0 so‘m</strong></div><div class="balance-stat"><small>Xarajat</small><strong id="expense">-0 so‘m</strong></div></div></div>
+<div class="actions"><button class="action income-btn" onclick="openModal('income')">＋ Daromad</button><button class="action expense-btn" onclick="openModal('expense')">− Xarajat</button></div>
+<div class="section"><div class="section-head"><h2>So‘nggi operatsiyalar</h2><button onclick="clearAll()">Tozalash</button></div><div class="search"><input id="search" type="text" placeholder="🔎 Qidirish..." oninput="renderHome()"></div><div id="transactions" class="transactions"></div></div>
+</div>
+
+<div id="statsPage" class="page">
+<div class="section"><div class="section-head"><h2>📊 Statistika</h2></div></div>
+<div class="periods"><button class="period-btn active" onclick="setPeriod('today',this)">Bugun</button><button class="period-btn" onclick="setPeriod('week',this)">Hafta</button><button class="period-btn" onclick="setPeriod('month',this)">Oy</button></div>
+<div class="stats-card"><div class="big-stat"><small>Jami xarajat</small><h2 id="statsExpense">0 so‘m</h2></div><div class="compare"><div class="compare-box income"><small>Daromad</small><strong id="statsIncome">0 so‘m</strong></div><div class="compare-box expense"><small>Xarajat</small><strong id="statsExpense2">0 so‘m</strong></div></div><div class="chart" id="chart"></div></div>
+<div class="section"><div class="section-head"><h2>Xarajat kategoriyalari</h2></div></div>
+<div class="stats-card" id="categoryList"></div><div class="insight" id="insight"></div>
+</div></div>
+
+<div class="bottom-nav"><button id="homeNav" class="nav-btn active" onclick="showPage('home')"><span>⌂</span>Bosh sahifa</button><button class="nav-btn" onclick="openModal('expense')"><span>＋</span>Qo‘shish</button><button id="statsNav" class="nav-btn" onclick="showPage('stats')"><span>◔</span>Statistika</button></div>
+
+<div class="modal" id="modal"><div class="modal-box"><div class="modal-top"><h2 id="modalTitle">Xarajat qo‘shish</h2><button class="close" onclick="closeModal()">✕</button></div>
+<div class="form-group"><label>Miqdor</label><input id="amount" type="number" placeholder="Masalan: 50000"></div>
+<div class="form-group"><label>Izoh</label><input id="description" type="text" placeholder="Masalan: Ovqat"></div>
+<div class="form-group"><label>Turkum</label><select id="category"><option value="Ovqat">🍔 Ovqat</option><option value="Transport">🚕 Transport</option><option value="Xarid">🛍 Xarid</option><option value="Uy">🏠 Uy</option><option value="Sog‘liq">💊 Sog‘liq</option><option value="Oylik">💼 Oylik</option><option value="Biznes">📈 Biznes</option><option value="Boshqa">📌 Boshqa</option></select></div>
+<button class="save-btn" onclick="saveTransaction()">Saqlash</button></div></div>
+
+<script>
+let transactions=JSON.parse(localStorage.getItem("transactions"))||[];
+let currentType="expense",currentPeriod="today";
+function formatMoney(number){return new Intl.NumberFormat("uz-UZ").format(Math.round(number))+" so‘m"}
+function escapeHTML(text){return String(text).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function getDate(t){return new Date(t.date)}
+function isToday(date){const now=new Date();return date.getDate()===now.getDate()&&date.getMonth()===now.getMonth()&&date.getFullYear()===now.getFullYear()}
+function isThisWeek(date){const now=new Date(),start=new Date(now),day=start.getDay();start.setDate(start.getDate()-(day===0?6:day-1));start.setHours(0,0,0,0);return date>=start}
+function isThisMonth(date){const now=new Date();return date.getMonth()===now.getMonth()&&date.getFullYear()===now.getFullYear()}
+function openModal(type){currentType=type;document.getElementById("modalTitle").textContent=type==="income"?"Daromad qo‘shish":"Xarajat qo‘shish";document.getElementById("amount").value="";document.getElementById("description").value="";document.getElementById("modal").classList.add("show")}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function saveTransaction(){const amount=Number(document.getElementById("amount").value),description=document.getElementById("description").value.trim(),category=document.getElementById("category").value;if(!amount||amount<=0){alert("Miqdorni kiriting!");return}const now=new Date();transactions.unshift({id:Date.now(),type:currentType,amount,description:description||category,category,date:now.toISOString(),displayDate:now.toLocaleDateString("uz-UZ")});localStorage.setItem("transactions",JSON.stringify(transactions));closeModal();renderAll()}
+function renderHome(){let income=0,expense=0;transactions.forEach(t=>{if(t.type==="income")income+=Number(t.amount);else expense+=Number(t.amount)});document.getElementById("balance").textContent=formatMoney(income-expense);document.getElementById("income").textContent="+"+formatMoney(income);document.getElementById("expense").textContent="-"+formatMoney(expense);const search=document.getElementById("search").value.toLowerCase().trim(),filtered=transactions.filter(t=>t.description.toLowerCase().includes(search)||t.category.toLowerCase().includes(search)),container=document.getElementById("transactions");if(filtered.length===0){container.innerHTML='<div class="empty"><div style="font-size:35px">🪙</div><div>Hali operatsiyalar yo‘q</div></div>';return}container.innerHTML=filtered.map(t=>{const income=t.type==="income";return `<div class="transaction"><div class="tx-icon ${income?"income":"expense"}">${income?"💰":"💸"}</div><div class="tx-info"><strong>${escapeHTML(t.description)}</strong><small>${escapeHTML(t.category)} · ${escapeHTML(t.displayDate||"")}</small></div><div class="tx-amount ${income?"income":"expense"}">${income?"+":"-"}${formatMoney(t.amount)}</div><button class="delete-btn" onclick="deleteTransaction(${t.id})">🗑</button></div>`}).join("")}
+function getPeriodData(){return transactions.filter(t=>{const date=getDate(t);if(currentPeriod==="today")return isToday(date);if(currentPeriod==="week")return isThisWeek(date);return isThisMonth(date)})}
+function setPeriod(period,button){currentPeriod=period;document.querySelectorAll(".period-btn").forEach(b=>b.classList.remove("active"));button.classList.add("active");renderStats()}
+function renderStats(){const data=getPeriodData();let income=0,expense=0;data.forEach(t=>{if(t.type==="income")income+=Number(t.amount);else expense+=Number(t.amount)});document.getElementById("statsIncome").textContent=formatMoney(income);document.getElementById("statsExpense").textContent=formatMoney(expense);document.getElementById("statsExpense2").textContent=formatMoney(expense);renderChart(data);renderCategories(data);renderInsight(data)}
+function renderChart(data){const chart=document.getElementById("chart");let labels=[],values=[];if(currentPeriod==="today"){labels=["00","04","08","12","16","20"];values=[0,0,0,0,0,0];data.forEach(t=>{if(t.type!=="expense")return;const hour=getDate(t).getHours(),index=Math.min(5,Math.floor(hour/4));values[index]+=Number(t.amount)})}else{labels=["Dush","Sesh","Chor","Pay","Juma","Shan","Yak"];values=[0,0,0,0,0,0,0];data.forEach(t=>{if(t.type!=="expense")return;const day=getDate(t).getDay(),index=day===0?6:day-1;values[index]+=Number(t.amount)})}const max=Math.max(...values,1);chart.innerHTML=values.map((value,index)=>{const height=Math.max(4,(value/max)*145);return `<div class="chart-column"><div class="chart-bar" style="height:${height}px"><span>${labels[index]}</span></div></div>`}).join("")}
+function renderCategories(data){const box=document.getElementById("categoryList"),categories={};data.forEach(t=>{if(t.type!=="expense")return;if(!categories[t.category])categories[t.category]=0;categories[t.category]+=Number(t.amount)});const entries=Object.entries(categories).sort((a,b)=>b[1]-a[1]);if(entries.length===0){box.innerHTML='<div class="empty">Hali xarajatlar yo‘q</div>';return}const max=entries[0][1],icons={"Ovqat":"🍔","Transport":"🚕","Xarid":"🛍","Uy":"🏠","Sog‘liq":"💊","Oylik":"💼","Biznes":"📈","Boshqa":"📌"};box.innerHTML='<div class="category-list">'+entries.map(([name,value])=>{const width=value/max*100;return `<div class="category-row"><div class="category-icon">${icons[name]||"📌"}</div><div><div class="category-name">${escapeHTML(name)}</div><div class="category-line"><div class="category-fill" style="width:${width}%"></div></div></div><div class="category-money">${formatMoney(value)}</div></div>`}).join("")+"</div>"}
+function renderInsight(data){const box=document.getElementById("insight");let categories={};data.forEach(t=>{if(t.type==="expense")categories[t.category]=(categories[t.category]||0)+Number(t.amount)});const top=Object.entries(categories).sort((a,b)=>b[1]-a[1])[0];if(!data.length){box.innerHTML="<small>Hisobon tavsiyasi</small><h3>Hali ma’lumot yetarli emas 📊</h3>";return}if(top){box.innerHTML=`<small>Eng katta xarajat</small><h3>${escapeHTML(top[0])} · ${formatMoney(top[1])}</h3>`}else{box.innerHTML="<small>Hisobon</small><h3>Xarajatlar hali yo‘q 🎉</h3>"}}
+function deleteTransaction(id){transactions=transactions.filter(t=>t.id!==id);localStorage.setItem("transactions",JSON.stringify(transactions));renderAll()}
+function clearAll(){if(!transactions.length){alert("O‘chirish uchun ma’lumot yo‘q.");return}if(!confirm("Barcha operatsiyalar o‘chirilsinmi?"))return;transactions=[];localStorage.removeItem("transactions");renderAll()}
+function showPage(page){document.getElementById("homePage").classList.remove("active");document.getElementById("statsPage").classList.remove("active");document.getElementById("homeNav").classList.remove("active");document.getElementById("statsNav").classList.remove("active");if(page==="home"){document.getElementById("homePage").classList.add("active");document.getElementById("homeNav").classList.add("active")}else{document.getElementById("statsPage").classList.add("active");document.getElementById("statsNav").classList.add("active");renderStats()}}
+function toggleDark(){document.body.classList.toggle("dark");localStorage.setItem("darkMode",document.body.classList.contains("dark")?"1":"0")}
+if(localStorage.getItem("darkMode")==="1")document.body.classList.add("dark");
+document.getElementById("modal").addEventListener("click",function(e){if(e.target===this)closeModal()});
+function renderAll(){renderHome();renderStats()}
+renderAll();
+</script>
+</body>
+</html>
